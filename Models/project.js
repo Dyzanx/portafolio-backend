@@ -8,6 +8,7 @@ var ProjectSchema = Schema({
     description: String,
     category: String,
     langs: String,
+    githubUrl: String,
     year: Number,
     image: String
 });
