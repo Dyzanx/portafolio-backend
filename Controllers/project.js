@@ -1,6 +1,7 @@
 'use strict'
 
 var Project = require('../models/project');
+var userModel = require('../models/user');
 var path = require('path');
 var fs = require('fs');
 var path = require('path');
@@ -34,6 +35,7 @@ var controller = {
 		project.name = params.name;
 		project.description = params.description;
 		project.category = params.category;
+		project.githubUrl = params.githubUrl;
 		project.year = params.year;
 		project.langs = params.langs;
 		project.image = null;
@@ -162,7 +164,53 @@ var controller = {
 				return res.status(200).send({message: 'The image does not exist'});
 			}
 		});
-	}
+	},
+
+	getUser: (req, res) => {
+		var userId = req.params.id;
+		var userPassword = req.params.password;
+
+		if(!userId || !userPassword) return res.status(404).send({message: 'User doesnt exists'});
+
+		userModel.find({_id: userId, password: userPassword}, (err, usuario) => {
+
+			if(err) return res.status(500).send({message: 'Failed to return user data', error: err});
+
+			if(!usuario) return res.status(404).send({message: 'User doesnt exists'});
+
+			if(userId && userPassword){
+				return res.status(200).send({
+					message: "User finded",
+					userData: usuario
+				});
+			}else{
+				return res.status(404).send({
+					message: "User doesnt exists or invalid credentials"
+				});
+			}
+		});
+	},
+
+	saveUser: (req, res) => {
+		var user = new User();
+
+		var params = req.body;
+		user.role = "user";
+		user.name = params.name;
+		user.email = params.email;
+		user.password = params.password;
+	
+
+		user.save((err, userStored) => {
+			if(err) return res.status(500).send({message: 'Couldnt register the user'});
+
+			if(!userStored) return res.status(404).send({message: 'Failed to register user'});
+
+			return res.status(200).send({
+				message: "User registered successfully",
+			});
+		});
+	},
 }
 
 module.exports = controller;

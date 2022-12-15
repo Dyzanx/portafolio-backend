@@ -16,8 +16,10 @@ router.get('/', ProjectController.home);
 router.get('/project/:id?', ProjectController.getProject);
 router.get('/projects', ProjectController.getProjects);
 router.get('/get-image/:image', ProjectController.getImage);
+router.get('/get-user/:id/:password', ProjectController.getUser);
 
 router.post('/save-project', ProjectController.saveProject);
+router.post('/save-user', ProjectController.saveUser);
 router.post('/upload-image/:id', multipartMiddleware, ProjectController.uploadImage);
 
 router.put('/update/:id', ProjectController.updateProject);
